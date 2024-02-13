@@ -24,11 +24,16 @@ class AlienInvasion():
         """start the main loop for the game"""
         while(True):
 
-                self._check_events()
-                self.ship.update()
-                self.bullets.update()
-                self._update_screen()
-                self.clock.tick(60)
+            self._check_events()
+            self.ship.update()
+            self.bullets.update()
+            self._update_screen()
+            self.clock.tick(60)
+        # get rid of the old bullets
+            for bulet in self.bullets.copy():
+                if bulet.rect.bottom <=0:
+                    self.bullets.remove(bulet)
+        
         
     def _check_events(self):
         """respond to keypress and mouse events"""
