@@ -3,7 +3,7 @@ import sys
 from settings import settings
 from ship import Ship
 from bullet import Bullet
-
+from alien import Alien
 
 class AlienInvasion():
     """ base class """
@@ -16,13 +16,16 @@ class AlienInvasion():
         self.screen = pygame.display.set_mode((self.settings.screen_width , self.settings.screen_height))
         pygame.display.set_caption("alien_invasion")
         self.ship = Ship(self)
+        self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
-        
+        self._create_fleet()
+
     def rungame(self):
         while True:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_alien()
             self._update_screen()
             self.clock.tick(60)
 
@@ -32,6 +35,7 @@ class AlienInvasion():
         self.ship.biltme()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        self.aliens.draw(self.screen)
         pygame.display.flip()
         
     def _check_events(self):
@@ -87,6 +91,49 @@ class AlienInvasion():
             if bullet.rect.right == 0:
                 self.bullets.remove(bullet)
 
+    def _create_alien(self, x_position , y_position):
+        """create alien"""
+        # make a new alien
+        new_alien = Alien(self)
+        # move it to the correct position
+        new_alien.rect.y = y_position 
+        new_alien.rect.x = x_position
+        new_alien.y = new_alien.rect.y
+        self.aliens.add(new_alien)
+
+    def _create_fleet(self):
+        """create a fleet of aliens"""
+        new_alien = Alien(self)
+        self.aliens.add(new_alien)
+        # get the positons of the alien
+        alien_width , alien_height = new_alien.rect.size
+        current_x , current_y = alien_width , alien_height
+        # make rows of alien
+        while current_x < (self.settings.screen_width - 4 * alien_width):
+            # make a row of alien
+            while current_y < (self.settings.screen_height - 2 * alien_height) :
+                self._create_alien(current_x , current_y)
+                current_y += 2*alien_height
+            current_x += 2*alien_width
+            current_y = alien_height 
+
+    def _update_alien(self):
+        """update the position of aliens"""
+        self._check_fleet_edgs()
+        self.aliens.update()
+            
+    def _check_fleet_edgs(self):
+        """check if fleet reches the edgs"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._fleet_change_direction()
+                break
+
+    def _fleet_change_direction(self):
+        """change the fleet direction and move it a bit right"""
+        self.settings.fleet_direction *= -1 
+        for alien in self.aliens:
+            alien.rect.x += self.settings.fleet_move_close
 
 if __name__ == "__main__":
     ai = AlienInvasion()
