@@ -99,7 +99,7 @@ class AlienInvasion():
 
     def _bullet_ailen_collitions(self):
         """handle collitons betweeen bullets and ailens"""
-        collisions = pygame.sprite.groupcollide(self.bullets , self.aliens , False , True)
+        collisions = pygame.sprite.groupcollide(self.bullets , self.aliens , True , True)
 
         #check if all aliens has been shoot make a new fleet
         if not self.aliens:

@@ -10,7 +10,7 @@ class Ship():
         self.screen_rect = ai_game.screen.get_rect()
 
         #load the picture
-        self.image = pygame.image.load('images/ship.bmp')
+        self.image = pygame.image.load('../gitignore/images/ship.bmp')
         self.rect = self.image.get_rect()
         #start new ship at the middel of the right side of screen
         self.rect.midright = self.screen_rect.midright

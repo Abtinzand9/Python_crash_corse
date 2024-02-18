@@ -1,5 +1,6 @@
 import pygame
 import sys 
+
 from settings import settings
 from ship import Ship
 from bullet import Bullet
@@ -90,6 +91,14 @@ class AlienInvasion():
         for bullet in self.bullets.copy():
             if bullet.rect.right == 0:
                 self.bullets.remove(bullet)
+        self._check_bullets_aliens_collitions()
+
+    def _check_bullets_aliens_collitions(self):
+        """ remove both alien and the bullet when collitions"""
+        collitions = pygame.sprite.groupcollide(self.aliens , self.bullets , True , True)
+        if not self.aliens:
+            self.bullets.empty()
+            self._create_fleet()
 
     def _create_alien(self, x_position , y_position):
         """create alien"""

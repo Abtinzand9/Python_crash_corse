@@ -10,7 +10,7 @@ class Alien(Sprite):
         self.settings = ai_game.settings
         self.screen = ai_game.screen
 
-        self.image = pygame.image.load('images/alien.bmp')
+        self.image = pygame.image.load('../gitignore/images/alien.bmp')
         self.rect = self.image.get_rect()
 
         # make the alien at the right top of the screen
