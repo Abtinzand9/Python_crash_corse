@@ -34,4 +34,8 @@ class Ship():
         """draw the ship on the screen"""
         self.screen.blit(self.image , self.rect)
 
+    def recenter(self):
+        """move the ship to the center of the screen"""
+        self.rect.midright = self.screen_rect.midright
+        self.y = self.rect.y
 

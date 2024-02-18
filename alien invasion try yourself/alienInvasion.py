@@ -1,10 +1,12 @@
 import pygame
 import sys 
+from time import sleep
 
 from settings import settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_states import GameStates
 
 class AlienInvasion():
     """ base class """
@@ -16,17 +18,20 @@ class AlienInvasion():
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((self.settings.screen_width , self.settings.screen_height))
         pygame.display.set_caption("alien_invasion")
+        self.state = GameStates(self)
         self.ship = Ship(self)
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self._create_fleet()
+        self.game_active = True
 
     def rungame(self):
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_alien()
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_alien()
             self._update_screen()
             self.clock.tick(60)
 
@@ -99,6 +104,18 @@ class AlienInvasion():
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
+    def _ship_hit(self):
+        """deal with aliens hit ship conditon"""
+        if self.state.ship_left > 0 :
+            self.state.ship_left -= 1
+            self.aliens.empty()
+            self.bullets.empty()
+            self.ship.recenter()
+            # add a new fleet
+            self._create_fleet()
+            sleep(0.5)
+        else :
+            self.game_active = False
 
     def _create_alien(self, x_position , y_position):
         """create alien"""
@@ -130,6 +147,9 @@ class AlienInvasion():
         """update the position of aliens"""
         self._check_fleet_edgs()
         self.aliens.update()
+        if pygame.sprite.spritecollideany(self.ship , self.aliens):
+            self._ship_hit()
+        self._check_ailens_rech_bottom()
             
     def _check_fleet_edgs(self):
         """check if fleet reches the edgs"""
@@ -143,6 +163,14 @@ class AlienInvasion():
         self.settings.fleet_direction *= -1 
         for alien in self.aliens:
             alien.rect.x += self.settings.fleet_move_close
+
+    def _check_ailens_rech_bottom(self): 
+        """check if an alien reches the bottom"""
+        for alien in self.aliens.sprites():
+            if alien.rect.right >= self.settings.screen_width:
+                # we treat like an ailen hit the ship
+                self._ship_hit()
+                break
 
 if __name__ == "__main__":
     ai = AlienInvasion()

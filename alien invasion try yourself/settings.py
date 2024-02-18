@@ -9,6 +9,7 @@ class settings :
 
         # ship variables 
         self.ship_speed = 2.5
+        self.ship_limit = 2
 
         #bullet settings
         self.bullet_speed = 10
@@ -21,4 +22,5 @@ class settings :
         self.fleet_speed = 3
         # 1 for down -1 for up
         self.fleet_direction = 1
-        self.fleet_move_close = 20
+        self.fleet_move_close = 100
+
