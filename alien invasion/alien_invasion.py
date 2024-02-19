@@ -7,6 +7,7 @@ from ship import ship
 from bullet import Bullet
 from alien import Alien
 from game_states import GameStats
+from button import Button
 
 class AlienInvasion():
     """overal class to manage game assets and behavior"""
@@ -23,12 +24,13 @@ class AlienInvasion():
         #initialise the stats of the game
         self.state = GameStats(self)
         self.ship = ship(self)
+        self.play_button = Button(self , "play")
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
         self._create_fleet()
         # for handle game over snarios
-        self.game_active = True
+        self.game_active = False
 
     def run_game(self):
         """start the main loop for the game"""
@@ -49,6 +51,9 @@ class AlienInvasion():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
@@ -71,6 +76,21 @@ class AlienInvasion():
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    def _check_play_button(self , mouse_pos):
+        """start a new game when player click on the play button"""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.game_active:
+            self.game_active =True
+            self.state.reset_stats()
+
+            # get rid of old aliens and bullets
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # create a new fleet 
+            self._create_fleet()
+            self.ship.center_ship()
+
     def _update_screen(self):
         """update images to the screen and flip the new scrceen"""
         #redraw the screen during: each loop
@@ -79,6 +99,9 @@ class AlienInvasion():
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+        # draw the play button 
+        if not self.game_active:
+            self.play_button.draw_button()
         # make the most recently drawn screen visible
         pygame.display.flip()
 
