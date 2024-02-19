@@ -8,6 +8,7 @@ from bullet import Bullet
 from alien import Alien
 from game_states import GameStats
 from button import Button
+from scoreboard import ScoreBoared
 
 class AlienInvasion():
     """overal class to manage game assets and behavior"""
@@ -25,6 +26,7 @@ class AlienInvasion():
         self.state = GameStats(self)
         self.ship = ship(self)
         self.play_button = Button(self , "play")
+        self.sb = ScoreBoared(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
@@ -80,6 +82,7 @@ class AlienInvasion():
         """start a new game when player click on the play button"""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.game_active:
+            self.settings.initialize_dynamic_settings()
             self.game_active =True
             self.state.reset_stats()
 
@@ -91,6 +94,10 @@ class AlienInvasion():
             self._create_fleet()
             self.ship.center_ship()
 
+            # make the cruser invisible
+            pygame.mouse.set_visible(False)
+
+
     def _update_screen(self):
         """update images to the screen and flip the new scrceen"""
         #redraw the screen during: each loop
@@ -99,6 +106,8 @@ class AlienInvasion():
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+        # draw the score informations
+        self.sb.show_score()
         # draw the play button 
         if not self.game_active:
             self.play_button.draw_button()
@@ -129,6 +138,7 @@ class AlienInvasion():
             #destroy the exiting bullets and make a new fleet
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increse_speed()
     
     def _create_fleet(self):
         """create a fleet of aliens"""
@@ -180,6 +190,7 @@ class AlienInvasion():
             sleep(0.5)
         else :
             self.game_active =False
+            pygame.mouse.set_visible(False)
 
 
     def _check_fleet_edge(self):
