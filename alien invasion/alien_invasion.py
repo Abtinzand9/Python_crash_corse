@@ -85,6 +85,7 @@ class AlienInvasion():
             self.settings.initialize_dynamic_settings()
             self.game_active =True
             self.state.reset_stats()
+            self.sb.prep_score()
 
             # get rid of old aliens and bullets
             self.aliens.empty()
@@ -132,7 +133,12 @@ class AlienInvasion():
     def _bullet_ailen_collitions(self):
         """handle collitons betweeen bullets and ailens"""
         collisions = pygame.sprite.groupcollide(self.bullets , self.aliens , True , True)
-
+        # increse score when an alien hit 
+        if collisions :
+            for alien in collisions.values():
+                self.state.score += self.settings.alien_point * len(alien)
+                self.sb.prep_score()
+                self.sb.check_high_score()
         #check if all aliens has been shoot make a new fleet
         if not self.aliens:
             #destroy the exiting bullets and make a new fleet
@@ -190,7 +196,7 @@ class AlienInvasion():
             sleep(0.5)
         else :
             self.game_active =False
-            pygame.mouse.set_visible(False)
+            pygame.mouse.set_visible(True)
 
 
     def _check_fleet_edge(self):

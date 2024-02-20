@@ -3,6 +3,8 @@ class GameStats:
     def __init__(self , ai_game) :
         """initialize statics"""
         self.settings = ai_game.settings
+        # high score should never restarts
+        self.high_score =0
         self.reset_stats()
 
     def reset_stats(self):
