@@ -1,13 +1,18 @@
 from pygame import font
+from pygame.sprite import Group
+from ship import Ship
+
 
 class ScoreBoared:
     """ A class to report scoring informations"""
     def __init__(self , ai_game):
         """initialize scorekeeping attributes"""
+        self.ai_game = ai_game
         self.settings = ai_game.settings
         self.screen = ai_game.screen
         self.screen_rect = ai_game.screen.get_rect()
         self.stats = ai_game.state
+
 
         # font settings
         self.text_color = (30 , 30 , 30)
@@ -17,6 +22,7 @@ class ScoreBoared:
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
+        self.prep_ships()
 
     def prep_score(self):
         """turn score to a renderd image"""
@@ -51,11 +57,21 @@ class ScoreBoared:
         self.level_rect.top = self.score_rect.bottom +20
         self.level_rect.right =self. score_rect.right
 
+    def prep_ships(self):
+        """show how many ships are left"""
+        self.ships = Group()
+        for ship_number in range(self.stats.ship_left):
+            ship = Ship(self.ai_game)
+            ship.rect.x = 10 + ship_number * ship.rect.width
+            ship.rect.y = 10
+            self.ships.add(ship)
+
     def show_score(self):
-        """draw the score to the screen"""
+        """draw the score , high score ,ships_left to the screen"""
         self.screen.blit(self.score_image , self.score_rect)
         self.screen.blit(self.high_score_image , self.high_score_rect)
         self.screen.blit(self.level_image , self.level_rect)
+        self.ships.draw(self.screen)
 
     def check_high_score(self):
         """check if high score needs an update"""

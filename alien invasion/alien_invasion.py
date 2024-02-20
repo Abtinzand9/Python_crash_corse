@@ -3,7 +3,7 @@ import pygame
 from time import sleep
 
 from settings import Settings
-from ship import ship
+from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_states import GameStats
@@ -24,7 +24,7 @@ class AlienInvasion():
         pygame.display.set_caption("Alien Invation")
         #initialise the stats of the game
         self.state = GameStats(self)
-        self.ship = ship(self)
+        self.ship = Ship(self)
         self.play_button = Button(self , "play")
         self.sb = ScoreBoared(self)
         self.bullets = pygame.sprite.Group()
@@ -87,6 +87,7 @@ class AlienInvasion():
             self.state.reset_stats()
             self.sb.prep_score()
             self.sb.prep_level()
+            self.sb.prep_ships()
 
             # get rid of old aliens and bullets
             self.aliens.empty()
@@ -188,8 +189,9 @@ class AlienInvasion():
     def _ship_hit(self):
         """respond to the ship hit by alien"""
         if self.state.ship_left > 0:
-            # decrese the number of ships left
+            # decrese the number of ships left and show it
             self.state.ship_left -= 1
+            self.sb.prep_ships()
             # get rid of the exiting bullets and aliens
             self.aliens.empty()
             self.bullets.empty()
