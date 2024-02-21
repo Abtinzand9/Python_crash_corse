@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 
 squares = [1,4,9,16,25]
 input_value = [1,2,3,4,5]
-# style the plot
-plt.style.use("seaborn-v0_8")
+
 fig , ax = plt.subplots()
 ax.plot(input_value,squares , linewidth = 3)
 # set chart title and axie
