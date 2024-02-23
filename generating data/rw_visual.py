@@ -8,7 +8,7 @@ while True:
 
     #plot points 
     plt.style.use('_classic_test_patch')
-    # resoze the plot fig
+    # resoze the plot fign
     fig , ax = plt.subplots(figsize =(11,8))
     poin_numbers = range(rw.num_points)
     ax.scatter(rw.x_values , rw.y_values , c= poin_numbers , cmap = plt.cm.Blues ,edgecolors= 'none', s =1)
